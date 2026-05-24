@@ -1,0 +1,257 @@
+{
+  "name": "Job Description Extractor",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Job Description Extractor",
+        "formDescription": "Paste your job description below and we will extract key information",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Job Description",
+              "fieldType": "textarea",
+              "fieldName": "jobDescription",
+              "placeholder": "Paste the full job description here...",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "84f680ac-53df-4789-a8d4-061a3d42b04f",
+      "name": "Job Description Form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        240,
+        304
+      ],
+      "webhookId": "001b4bf0-dfed-486c-ab84-aed5950660b8"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.jobDescription }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "companyName",
+              "description": "The name of the company hiring"
+            },
+            {
+              "name": "skills",
+              "description": "Comma-separated list of required skills and technologies"
+            },
+            {
+              "name": "mode",
+              "description": "Work mode (e.g., remote, hybrid, on-site, in-office)"
+            },
+            {
+              "name": "level",
+              "description": "Experience level or seniority (e.g., junior, mid-level, senior, lead)"
+            },
+            {
+              "name": "location",
+              "description": "Job location or city/country where the position is based"
+            },
+            {
+              "name": "jobType",
+              "description": "Employment type (e.g., full-time, part-time, contract, internship)"
+            },
+            {
+              "name": "selectionProcess",
+              "description": "Description of the hiring or selection process if mentioned"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1bbfe968-341c-42d7-a1db-6310225ef7de",
+      "name": "Extract Job Info",
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        464,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1X3wZvlw1O0QJSVq0WCOJN313oYyNpL_c-S6_kN0Ts_Y/edit?usp=drive_link",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Filter",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1X3wZvlw1O0QJSVq0WCOJN313oYyNpL_c-S6_kN0Ts_Y/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company": "={{ $json.output.companyName }}",
+            "Skills": "={{ $json.output.skills }}",
+            "Location": "={{ $json.output.location }}",
+            "Experience level": "={{ $json.output.level }}",
+            "Remote": "={{ $json.output.mode }}",
+            "Job Type": "={{ $json.output.jobType }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Skills",
+              "displayName": "Skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Experience level",
+              "displayName": "Experience level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Remote",
+              "displayName": "Remote",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Job Type",
+              "displayName": "Job Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Easy Apply",
+              "displayName": "Easy Apply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "565595fc-653e-4f8b-8c33-027453fd1349",
+      "name": "Save to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        816,
+        304
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "mDAaom5KpUKLTKkm",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "id": "8b88b3a9-f21d-4e5b-8768-4afd8b3dbd76",
+      "name": "Groq Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        536,
+        528
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "kpKdsj7I9nHPQIUA",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Job Description Form": {
+      "main": [
+        [
+          {
+            "node": "Extract Job Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Job Info": {
+      "main": [
+        [
+          {
+            "node": "Save to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extract Job Info",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "35861150-43ca-4e35-95e3-21ab09206ce9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "447db2cabc258ab956bfdafab079fc1ca9bcf963a71ec296b66006d60c133e5c"
+  },
+  "id": "4nsVnmN2gDRiHTWa",
+  "tags": []
+}
