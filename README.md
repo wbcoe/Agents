@@ -29,6 +29,8 @@ Format Structured Output
       ▼
 Append Data into Google Sheets
 ```
+---
+<img width="1395" height="647" alt="Screenshot 2026-05-25 030821" src="https://github.com/user-attachments/assets/1b72ee30-fd17-435e-804e-b407eeb491b6" />
 
 ---
 
